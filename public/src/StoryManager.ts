@@ -15,7 +15,7 @@ export function scrollToBottom() {
         return;
     }
     const duration = 300 + 300*dist/100;
-    let startTime:number = null;
+    let startTime:number = 0;
     function step(time: number) {
         if( startTime == null ){
             startTime = time;
@@ -38,7 +38,7 @@ export class StoryManager{
         this.storyContainer = document.querySelectorAll('#story')[0];
     }
     continueStory() {
-        let delay = 0.0;
+        let delay = 0;
         // Generate story text - loop through available content
 
         while(this.story.canContinue) {
@@ -50,7 +50,7 @@ export class StoryManager{
             this.storyContainer.appendChild(paragraphElement);
             // Fade in paragraph after a short delay
             showAfter(delay, paragraphElement);
-            delay += 200.0;
+            delay += 200;
         }
 
         // Create HTML choices from ink choices
@@ -62,7 +62,7 @@ export class StoryManager{
             this.storyContainer.appendChild(choiceParagraphElement);
             // Fade choice in after a short delay
             showAfter(delay, choiceParagraphElement);
-            delay += 200.0;
+            delay += 200;
             // Click on choice
             const choiceAnchorEl:any = choiceParagraphElement.querySelectorAll("a")[0];
             choiceAnchorEl.addEventListener("click", (event: any) => {

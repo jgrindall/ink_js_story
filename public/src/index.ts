@@ -1,5 +1,7 @@
 import {Story} from "inkjs";
 import {StoryManager} from "./StoryManager";
+import { createApp } from "vue";
+import App from "./App.vue";
 
 fetch("ink.json")
     .then(function (response) {
@@ -13,3 +15,6 @@ fetch("ink.json")
             manager.continueStory();
         }
     });
+
+createApp(App).mount("#app");
+

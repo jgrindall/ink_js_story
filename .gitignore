@@ -1,2 +1,4 @@
 node_modules
 public/dist
+public/src/**/*.map
+public/src/**/*.js
