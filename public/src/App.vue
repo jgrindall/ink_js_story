@@ -8,13 +8,12 @@
 
 <script lang="ts">
 
-
     import Component from "./Component.vue";
 
     export default {
         data() {
             return {
-                name: 'John'
+                name: 'John123'
             }
         },
         components: {

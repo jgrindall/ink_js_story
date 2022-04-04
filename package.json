@@ -4,18 +4,19 @@
   "description": "ink",
   "main": "web.js",
   "scripts": {
-    "build": "tsc && webpack --config webpack.config.js",
-    "build2": "vue-tsc --noEmit && webpack --config webpack.config.js"
+    "build": "vue-tsc --noEmit && webpack --config webpack.config.js"
   },
   "author": "jgrindall",
   "license": "BSD",
   "dependencies": {
+    "@billjs/event-emitter": "^1.0.3",
+    "core-js": "^3.6.5",
     "express": "~3.5.1",
     "grunt": "~0.4.5",
-    "core-js": "^3.6.5",
+    "pinia": "^2.0.13",
     "vue": "^3.1.0",
-    "vue-loader": "^16.8.0",
     "vue-class-component": "^7.2.6",
+    "vue-loader": "^16.8.0",
     "vue-property-decorator": "^8.4.2"
   },
   "devDependencies": {
