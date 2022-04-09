@@ -11,6 +11,25 @@ module.exports = {
 	module: {
 		rules: [
 			{
+				test: /\.css$/,
+				use: [
+					'vue-style-loader',
+					'css-loader',
+				]
+			},
+			{
+				test: /\.(jpe?g|png|gif)$/i,
+				loader: "file-loader"
+			},
+			{
+				test: /\.scss$/,
+				use: [
+					'vue-style-loader',
+					'css-loader',
+					'sass-loader'
+				]
+			},
+			{
 				test: /\.tsx?$/,
 				loader: 'ts-loader',
 				options: {

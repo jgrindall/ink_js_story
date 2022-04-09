@@ -1,16 +1,25 @@
 import { defineStore } from 'pinia'
 import {StoryManager} from "./StoryManager";
+import {Choice, Paragraph} from "@/types";
 
 let storyManager: StoryManager;
 
+type StoryState = {
+    counter:number,
+    name:string,
+    isAdmin:boolean,
+    paragraphs: Paragraph[],
+    choices: Choice[]
+}
+
 export const useStore = defineStore('Story', {
-    state: () => {
+    state: (): StoryState => {
         return {
             counter: 0,
             name: 'Eduardo',
             isAdmin: true,
             paragraphs: [],
-            choices:[]
+            choices: []
         }
     },
     getters: {
@@ -19,11 +28,8 @@ export const useStore = defineStore('Story', {
         }
     },
     actions:{
-        continueStory(){
-
-        },
-        async load(){
-            fetch("ink.json")
+        async load(filename:string = "ink.json"){
+            fetch(filename)
                 .then((response) => {
                     return response.text();
                 })
@@ -31,13 +37,14 @@ export const useStore = defineStore('Story', {
                     if(content){
                         storyManager = new StoryManager(content);
                         storyManager.on("continue", (event:any)=>{
+                            console.log(event.data);
                             this.paragraphs = [
                                 ...this.paragraphs,
                                 ...event.data.paragraphs
                             ];
                             this.choices = event.data.choices;
                         });
-                        storyManager.continueStory();
+                        storyManager.continue();
                     }
                 });
         },

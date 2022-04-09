@@ -12,12 +12,20 @@
         {{ store.gCount }}
     </div>
 
-    <ul>
-        <li v-for="(p, i) in paragraphs" :key="i">{{ p }}</li>
-    </ul>
+    <p>Story</p>
 
     <ul>
-        <li v-for="(c, i) in choices" :key="i" @click="store2.choose(i)">{{ c }}</li>
+        <li v-for="para in paragraphs" :key="para.id">
+            <paragraph :para="para"></paragraph>
+        </li>
+    </ul>
+
+    <p>Choices</p>
+
+    <ul>
+        <li v-for="(choice, i) in choices" :key="choice.id" @click="store2.choose(i)">
+            <choice :choice="choice"></choice>
+        </li>
     </ul>
 
     <button @click="toggleVis">Toggle</button>
@@ -35,9 +43,16 @@
     import { storeToRefs } from 'pinia'
     import {useStore as useCounterStore} from './Counter';
     import {useStore as useStoryStore} from './Story';
+    import {Paragraph, Choice} from "@/types";
+    import ChoiceView from "./ChoiceView.vue";
+    import ParagraphView from "./ParagraphView.vue";
 
     export default defineComponent({
         name: 'Component',
+        components: {
+            paragraph: ParagraphView,
+            choice: ChoiceView
+        },
         props: {
             msg: {
                 type: String,
@@ -51,6 +66,8 @@
             const { name, counter } = storeToRefs(store);
             const { paragraphs, choices } = storeToRefs(store2);
 
+            const c1 = ref(store2.choices);
+
             const printMsg = (msg: string) => {
                 console.log(`The message is: ${msg}`);
             };
@@ -63,8 +80,6 @@
                 printMsg("hello");
                 store.increment();
             };
-
-
 
             return {
                 store,

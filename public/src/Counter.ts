@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia'
 
+type CState = {
+    counter:number,
+    name:string,
+    isAdmin:boolean
+}
+
 export const useStore = defineStore('Counter', {
-    state: () => {
+    state: (): CState => {
         return {
             counter: 0,
             name: 'Eduardo',

@@ -4,7 +4,8 @@
   "description": "ink",
   "main": "web.js",
   "scripts": {
-    "build": "vue-tsc --noEmit && webpack --config webpack.config.js"
+    "build": "vue-tsc --noEmit && webpack --config webpack.config.js --watch",
+    "build2": "vue-tsc --noEmit"
   },
   "author": "jgrindall",
   "license": "BSD",
@@ -17,7 +18,14 @@
     "vue": "^3.1.0",
     "vue-class-component": "^7.2.6",
     "vue-loader": "^16.8.0",
-    "vue-property-decorator": "^8.4.2"
+    "vue-property-decorator": "^8.4.2",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^8.0.2",
+    "postcss-loader": "^3.0.0",
+    "style-loader": "~0.22.1",
+    "css-loader": "~2.1.1",
+    "vue-style-loader": "~4.1.2",
+    "file-loader": "~2.0.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
