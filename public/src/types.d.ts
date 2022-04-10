@@ -2,7 +2,8 @@ export interface Paragraph{
     text: string,
     tags: string[],
     id:string,
-    shown:boolean
+    shown:boolean,
+    delay:number
 }
 
 export interface Choice {

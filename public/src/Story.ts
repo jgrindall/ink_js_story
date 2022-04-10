@@ -48,11 +48,10 @@ export const useStore = defineStore('Story', {
                     }
                 });
         },
-        show(i:number){
+        show(i:number, delay:number){
             const p = this.paragraphs[i];
-            if(!p.shown) {
-                p.shown = true;
-            }
+            p.shown = true;
+            p.delay = delay;
         },
         choose(i:number){
             storyManager.choose(i)

@@ -46,9 +46,12 @@
 
     function handleFade(paragraphs: any[]){
         const els:HTMLElement[] = componentRef?.value?.getRects();
+        let delay = 1;
         els.forEach((el, i)=>{
-            if(isElemVisible(el)){
-                store.show(i);
+            const p = paragraphs[i];
+            if(isElemVisible(el) && !p.shown){
+                store.show(i, delay);
+                delay++;
             }
         });
     }
@@ -59,9 +62,6 @@
 
     const handleScroll = (e:any) => {
         handleFade(paragraphs.value);
-        //console.log(e);
-        //const els = this.$refs.fade;
-        //console.log(els);
     };
 
 </script>

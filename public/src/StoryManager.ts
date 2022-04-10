@@ -33,7 +33,8 @@ export class StoryManager extends EventEmitter{
                 text: text,
                 tags: this.story.currentTags || [],
                 id: "" + id,
-                shown: false
+                shown: false,
+                delay:0
             });
             id++;
         }
