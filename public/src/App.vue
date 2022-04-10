@@ -4,13 +4,13 @@
         <CanvasView></CanvasView>
     </div>
 
-
-    <div id="wrapper">
-        <div id="container">
-            <ComponentView :msg="name"></ComponentView>
+    <div id="wrapper" ref="wrapperRef">
+        <div id="container" ref="containerRef">
+            <ComponentView :msg="name" ref="componentRef"></ComponentView>
         </div>
     </div>
 
+    <p style="position: fixed;z-index:3; top:10px; left:10px;">#{{paragraphs.length}}</p>
 
 </template>
 
@@ -18,9 +18,55 @@
 
     import ComponentView from "./ComponentView.vue";
     import CanvasView from "./CanvasView.vue";
-    import { ref } from 'vue'
+    import { ref, onMounted, onUnmounted, watchEffect, onBeforeUnmount } from 'vue'
+    import {useStore as useStoryStore} from './Story';
+    import { storeToRefs } from 'pinia'
+    import {Paragraph} from "@/types";
 
     const name = ref("John1234")
+    const wrapperRef = ref<HTMLInputElement | null>(null);
+    const componentRef = ref<{ getRects: () => HTMLElement[] }>({getRects: ()=>([])});
+    const store = useStoryStore();
+    const { paragraphs, choices } = storeToRefs(store);
+
+    onMounted(()=>{
+        store.load();
+        wrapperRef?.value?.addEventListener("scroll", handleScroll);
+    });
+
+    onBeforeUnmount(() => {
+        wrapperRef?.value?.removeEventListener("scroll", handleScroll);
+    });
+
+    const isElemVisible = (el: HTMLElement): boolean => {
+        const rect = el.getBoundingClientRect();
+        const wrapperRect = wrapperRef?.value?.getBoundingClientRect();
+        return rect.top >= wrapperRect.top && rect.bottom <= wrapperRect.bottom;
+    };
+
+    function handleFade(paragraphs: any[]){
+        const els:HTMLElement[] = componentRef?.value?.getRects();
+        const ps:Paragraph[] = Object.values(paragraphs);
+        els.forEach((el, i)=>{
+            if(isElemVisible(el)){
+                store.show(i);
+            }
+        })
+        const vis = els.map(isElemVisible);
+
+        console.log('fade', els, ps, vis);
+    }
+
+    watchEffect(() => {
+        handleFade(paragraphs.value);
+    });
+
+    const handleScroll = (e:any) => {
+        handleFade(paragraphs.value);
+        //console.log(e);
+        //const els = this.$refs.fade;
+        //console.log(els);
+    };
 
 </script>
 
@@ -49,9 +95,8 @@
         overflow-y: auto;
     }
     #container{
-        width:600px;
+        width:768px;
         margin:auto;
         display: block;
     }
 </style>
-

@@ -48,6 +48,12 @@ export const useStore = defineStore('Story', {
                     }
                 });
         },
+        show(i:number){
+            const p = this.paragraphs[i];
+            if(!p.shown) {
+                p.shown = true;
+            }
+        },
         choose(i:number){
             storyManager.choose(i)
         },

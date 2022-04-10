@@ -6,28 +6,19 @@
 
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 
-    import { defineComponent, PropType } from 'vue';
+    import {PropType, defineProps } from 'vue';
     import {Choice} from "@/types";
 
-    export default defineComponent({
-        name: 'ChoiceView',
-        props: {
-            choice: {
-                type: Object as PropType<Choice>,
-                required: true
-            }
-        },
-        setup(props:any) {
-            return {
-                choice: props.choice
-            };
-        }
-    });
+    const props = defineProps({
+       choice:  {
+          type: Object as PropType<Choice>,
+          required: true
+       }
+    })
 
 </script>
-
 
 <style lang="scss" scoped>
    p{

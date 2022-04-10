@@ -10,6 +10,8 @@ export function showAfter(delay:number, el:any) {
     }, delay);
 }
 
+let id = 0;
+
 export class StoryManager extends EventEmitter{
 
     private story: typeof _s;
@@ -25,29 +27,22 @@ export class StoryManager extends EventEmitter{
     public continue() {
         const paragraphs:Paragraph[] = [];
         const choices:Choice[] = [];
-
-        console.log(this.story.currentDebugMetadata);
-        console.log(this.story.currentFlowName);
-        console.log(this.story.currentTags);
-
         while(this.story.canContinue) {
-            const c:string = this.story.Continue() || "";
-            console.log(c);
-            console.log(this.story.currentDebugMetadata);
-            console.log(this.story.currentFlowName);
-            console.log();
+            const text:string = this.story.Continue() || "";
             paragraphs.push({
-                text: c,
+                text: text,
                 tags: this.story.currentTags || [],
-                id: "" + Math.random()*100000000000
+                id: "" + id,
+                shown: false
             });
+            id++;
         }
         this.story.currentChoices.forEach((choice: any) => {
-            console.log(choice);
             choices.push({
                 text: choice.text,
-                id: "" + Math.random()*100000000000
-            })
+                id: "" +id
+            });
+            id++;
         });
         this.fire("continue", {paragraphs, choices})
     }

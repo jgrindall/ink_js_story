@@ -1,32 +1,23 @@
 <template>
 
-    <div>
-        <p>{{para.text}}</p>
-        <p>{{para.tags}}</p>
+    <div :class="{'shown': paragraph.shown}">
+        <p>{{paragraph.text}}</p>
+        <p>{{paragraph.tags}}</p>
     </div>
 
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 
-    import { defineComponent, PropType } from 'vue';
+    import { PropType, defineProps } from 'vue';
     import {Paragraph} from "@/types";
 
-    export default defineComponent({
-        name: 'ParagraphView',
-        props: {
-            para: {
-                type: Object as PropType<Paragraph>,
-                required: true
-            }
-        },
-        setup(props:any) {
-            console.log(props);
-            return {
-                para: props.para
-            };
+    const props = defineProps({
+        paragraph:  {
+            type: Object as PropType<Paragraph>,
+            required: true
         }
-    });
+    })
 
 </script>
 
@@ -35,5 +26,8 @@
         background: grey;
         margin:40px;
         padding:40px;
+    }
+    .shown{
+        background: lightpink;
     }
 </style>
