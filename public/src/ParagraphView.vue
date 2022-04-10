@@ -33,7 +33,7 @@
 <style lang="scss" scoped>
     p{
         background: grey;
-        margin:20px;
-        padding:20px;
+        margin:40px;
+        padding:40px;
     }
 </style>

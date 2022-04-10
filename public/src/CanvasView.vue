@@ -20,8 +20,14 @@
 </script>
 
 <style scoped lang="scss">
+    div, canvas{
+        width:100%;
+        height:100%;
+    }
     canvas{
         background: red;
         background-image: url("./bg.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
     }
 </style>

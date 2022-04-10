@@ -27,3 +27,12 @@
     });
 
 </script>
+
+
+<style lang="scss" scoped>
+   p{
+      background: lightblue;
+      margin:40px;
+      padding:40px;
+   }
+</style>

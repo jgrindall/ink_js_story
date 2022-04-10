@@ -14,9 +14,18 @@
 
     <p>Story</p>
 
+
+    <!--
+
+    https://v2.vuejs.org/v2/guide/transitions.html#Staggering-List-Transitions
+    <transition name="fade">
+        <p v-if="show">hello</p>
+    </transition>
+    -->
+
     <ul>
         <li v-for="para in paragraphs" :key="para.id">
-            <paragraph :para="para"></paragraph>
+            <paragraph ref="fade" class="fade-in" :para="para"></paragraph>
         </li>
     </ul>
 
@@ -24,7 +33,7 @@
 
     <ul>
         <li v-for="(choice, i) in choices" :key="choice.id" @click="store2.choose(i)">
-            <choice :choice="choice"></choice>
+            <choice class="fade-in" :choice="choice"></choice>
         </li>
     </ul>
 
@@ -39,7 +48,9 @@
 
 <script lang="ts">
 
-    import { defineComponent, ref } from 'vue';
+    import { defineComponent, ref, onMounted, onUnmounted } from "vue";
+
+
     import { storeToRefs } from 'pinia'
     import {useStore as useCounterStore} from './Counter';
     import {useStore as useStoryStore} from './Story';
@@ -48,7 +59,7 @@
     import ParagraphView from "./ParagraphView.vue";
 
     export default defineComponent({
-        name: 'Component',
+        name: 'ComponentView',
         components: {
             paragraph: ParagraphView,
             choice: ChoiceView
@@ -62,6 +73,9 @@
         setup(props:any) {
             const store = useCounterStore();
             const store2 = useStoryStore();
+
+            const els = ref<HTMLInputElement | null>(null)
+
             store2.load();
             const { name, counter } = storeToRefs(store);
             const { paragraphs, choices } = storeToRefs(store2);
@@ -79,6 +93,32 @@
                 visible.value = !visible.value;
                 printMsg("hello");
                 store.increment();
+            };
+
+            const markForTransition = ()=>{
+
+            };
+
+            const isElemVisible = (el: HTMLElement): boolean => {
+                var rect = el.getBoundingClientRect()
+                var elemTop = rect.top + 100;
+                var elemBottom = rect.bottom;
+                return elemTop < window.innerHeight && elemBottom >= 0
+            };
+
+            onMounted(() => {
+                window.addEventListener("scroll", handleScroll)
+                handleScroll(null);
+            });
+
+            onUnmounted(() => {
+                window.removeEventListener("scroll", handleScroll)
+            });
+
+            const handleScroll = (e:any) => {
+                console.log(e);
+                //const els = this.$refs.fade;
+                //console.log(els);
             };
 
             return {
