@@ -41,20 +41,16 @@
     const isElemVisible = (el: HTMLElement): boolean => {
         const rect = el.getBoundingClientRect();
         const wrapperRect = wrapperRef?.value?.getBoundingClientRect();
-        return rect.top >= wrapperRect.top && rect.bottom <= wrapperRect.bottom;
+        return !!(wrapperRect && rect && rect.top >= wrapperRect.top && rect.bottom <= wrapperRect.bottom);
     };
 
     function handleFade(paragraphs: any[]){
         const els:HTMLElement[] = componentRef?.value?.getRects();
-        const ps:Paragraph[] = Object.values(paragraphs);
         els.forEach((el, i)=>{
             if(isElemVisible(el)){
                 store.show(i);
             }
-        })
-        const vis = els.map(isElemVisible);
-
-        console.log('fade', els, ps, vis);
+        });
     }
 
     watchEffect(() => {
