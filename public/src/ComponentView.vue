@@ -34,7 +34,7 @@
 
     import {
         defineComponent, ComponentPublicInstance, ref, ComputedRef,
-        onMounted, onUnmounted, defineProps, PropType, defineExpose, computed
+        onMounted, onUnmounted, PropType, computed, defineExpose, defineProps
     } from "vue";
 
     import { storeToRefs } from 'pinia'
@@ -45,7 +45,7 @@
     import {Paragraph} from "./types";
 
     type PType = (typeof ParagraphView) | null;
-    const elements = ref<PType>([]);
+    const elements = ref<PType[]>([]);
 
     const props = defineProps({
         msg:  {
