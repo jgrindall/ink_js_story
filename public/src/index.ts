@@ -1,7 +1,5 @@
 import { createApp } from "vue";
-import App from "./App.vue";
-import { createPinia } from 'pinia'
+import App2 from "./App2.vue";
 
-createApp(App)
-    .use(createPinia())
+createApp(App2)
     .mount("#app");

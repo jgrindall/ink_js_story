@@ -21,7 +21,9 @@
     import { ref, onMounted, onUnmounted, watchEffect, onBeforeUnmount } from 'vue'
     import {useStore as useStoryStore} from './Story';
     import { storeToRefs } from 'pinia'
-    import {Paragraph} from "@/types";
+    import {Paragraph} from "./types";
+    import {isContained} from "./Layout";
+    import {debounce} from "underscore";
 
     const name = ref("John1234")
     const wrapperRef = ref<HTMLInputElement | null>(null);
@@ -39,30 +41,37 @@
     });
 
     const isElemVisible = (el: HTMLElement): boolean => {
-        const rect = el.getBoundingClientRect();
-        const wrapperRect = wrapperRef?.value?.getBoundingClientRect();
-        return !!(wrapperRect && rect && rect.top >= wrapperRect.top && rect.bottom <= wrapperRect.bottom);
+        return isContained(el.getBoundingClientRect(), wrapperRef?.value?.getBoundingClientRect())
     };
 
-    function handleFade(paragraphs: any[]){
+    function handleFade(paragraphs: any[], choices: any[]){
         const els:HTMLElement[] = componentRef?.value?.getRects();
-        let delay = 1;
+        let delay = 0;
+        const entries = [
+            ...paragraphs,
+            ...choices
+        ];
         els.forEach((el, i)=>{
-            const p = paragraphs[i];
+            const p = entries[i];
+            console.log(i, el, p);
             if(isElemVisible(el) && !p.shown){
-                store.show(i, delay);
-                delay++;
+                p.shown = true;
+                p.delay = delay;
+                //store.show(i, delay);
+                delay += 0.3333;
             }
         });
     }
 
     watchEffect(() => {
-        handleFade(paragraphs.value);
+        handleFade(paragraphs.value, choices.value);
     });
 
-    const handleScroll = (e:any) => {
-        handleFade(paragraphs.value);
+    let handleScroll = (e:any) => {
+        handleFade(paragraphs.value, choices.value);
     };
+
+    handleScroll = debounce(handleScroll, 200);
 
 </script>
 
@@ -74,7 +83,7 @@
     }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
     #app{
         width: 100%;
         height: 100%;

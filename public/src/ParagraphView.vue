@@ -6,8 +6,8 @@
     >
         <p>
             {{paragraph.text}}
-            <span>{{paragraph.delay}}</span>
-            <span>{{paragraph.tags}}</span>
+            <span>delay = {{paragraph.delay}}</span>
+            <span>tags = {{paragraph.tags}}</span>
         </p>
     </div>
 

@@ -8,12 +8,7 @@ export interface Paragraph{
 
 export interface Choice {
     text: string,
-    id:string
-}
-
-export type DomRect = {
-    x:number;
-    y:number;
-    width:number;
-    height:number;
+    id:string,
+    shown:boolean,
+    delay:number
 }

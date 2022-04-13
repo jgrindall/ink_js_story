@@ -4,12 +4,6 @@ import {Choice, Paragraph} from "@/types";
 
 const _s = new Story({"inkVersion":20,"root":[[["done",{"#f":5,"#n":"g-0"}],null],"done",{"#f":1}],"listDefs":{}});
 
-export function showAfter(delay:number, el:any) {
-    setTimeout(function() {
-        el.classList.add("show")
-    }, delay);
-}
-
 let id = 0;
 
 export class StoryManager extends EventEmitter{
@@ -41,7 +35,9 @@ export class StoryManager extends EventEmitter{
         this.story.currentChoices.forEach((choice: any) => {
             choices.push({
                 text: choice.text,
-                id: "" +id
+                id: "" +id,
+                shown: false,
+                delay:0
             });
             id++;
         });

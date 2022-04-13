@@ -14,13 +14,13 @@
     <ul>
 
         <li v-for="(paragraph, i) in paragraphs" :key="paragraph.id">
-            <ParagraphView :ref="el => elements[i] = el.$el" class="fade-in" :paragraph="paragraph"/>
+            <ParagraphView :ref="(el:any) => paragraphRefs[i] = el.$el" class="fade-in" :paragraph="paragraph"/>
         </li>
     </ul>
 
     <ul>
         <li v-for="(choice, i) in choices" :key="choice.id" @click="store2.choose(i)">
-            <ChoiceView class="fade-in" :choice="choice"/>
+            <ChoiceView :ref="(el:any) => choiceRefs[i] = el.$el" class="fade-in" :choice="choice"/>
         </li>
     </ul>
 
@@ -33,7 +33,7 @@
 <script lang="ts" setup>
 
     import {
-        defineComponent, ComponentPublicInstance, ref, ComputedRef,
+        ref,
         onMounted, onUnmounted, PropType, computed, defineExpose, defineProps
     } from "vue";
 
@@ -44,8 +44,8 @@
     import ParagraphView from "./ParagraphView.vue";
     import {Paragraph} from "./types";
 
-    type PType = (typeof ParagraphView) | null;
-    const elements = ref<PType[]>([]);
+    const paragraphRefs = ref<( (typeof ParagraphView) | null)[]>([]);
+    const choiceRefs = ref<( (typeof ChoiceView) | null)[]>([]);
 
     const props = defineProps({
         msg:  {
@@ -74,7 +74,10 @@
 
     defineExpose({
         getRects:()=>{
-            return Object.values(elements?.value || []);
+            return [
+                ...Object.values(paragraphRefs?.value || []),
+                ...Object.values(choiceRefs?.value || [])
+            ]
         }
     });
 
