@@ -1,7 +1,10 @@
 <template>
 
     <div ref="wrapperRef" class="wrapper">
-        <slot></slot>
+        <div class="container" :ref="(el:any) => setItemRef(el, i)" v-for="(item, i) in items" :key="item.id" :class="{seen: visHash[item.id]}">
+            <slot :item = "item"/>
+        </div>
+
     </div>
 
 </template>
@@ -9,16 +12,32 @@
 <script lang="ts" setup>
 
     import { ref, onMounted, onUnmounted, watchEffect, defineEmits, onBeforeUnmount } from 'vue'
+    import type { Ref } from 'vue'
     import {isContained} from "./Layout";
     import {debounce} from "underscore";
 
-    const props = defineProps({
-        selector: String,
-        getChildren: Function
-    });
+    interface HasId{
+        id: string
+    }
+
+    type propTypes = {
+        items: HasId[]
+    };
+
+    const props = defineProps<propTypes>();
+
+    const visHash: Ref<Record<string, boolean>> = ref({});
+
+    let blockRefs:any[] = [];
+
+    const setItemRef = (el:any, i:any) => {
+        console.log('el', i, el);
+        if (el) {
+            blockRefs[i] = el;
+        }
+    };
 
     const emit = defineEmits(['change']);
-
 
     const wrapperRef = ref<HTMLInputElement | null>(null);
 
@@ -42,10 +61,16 @@
         });
     }
 
+    const updateVis = ()=>{
+       const _vis = blockRefs.map(isElemVisible);
+        props.items.forEach( (item: HasId, i:number)=>{
+            visHash.value[item.id] = visHash.value[item.id] || _vis[i];
+        });
+        console.log(visHash.value);
+    }
+
     let handleScroll = (e:any) => {
-        const els = props.getChildren ? props.getChildren() : [];
-        console.log("els", els);
-        emit('change', els.map(isElemVisible));
+       updateVis();
     };
 
     handleScroll = debounce(handleScroll, 200);
@@ -62,5 +87,8 @@
         height:700px;
         left:400px;
         overflow-y: auto;
+    }
+    .seen{
+        background:green;
     }
 </style>

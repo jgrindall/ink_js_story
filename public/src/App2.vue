@@ -1,9 +1,11 @@
 <template>
 
-    <Wrapper :selector="'.block'" :getChildren="getChildren" @change="onChange">
-        <div>
-            <block v-for="(block:any, i:number) in blocks" :ref="(el:any) => setItemRef(el, i)" :block="block"/>
-        </div>
+    <Wrapper :items="blocks">
+
+        <template #default="{ item }">
+            <block :block="item"></block>
+        </template>
+
     </Wrapper>
 
 </template>
@@ -33,22 +35,17 @@
         })
     };
 
-    const getChildren = ()=>{
-        console.log(blockRefs);
-        return Object.values(blockRefs);
-    };
-
     const blocks = ref([
-        {content:"Hello1", visible: false},
-        {content:"Hello2", visible: false},
-        {content:"Hello3", visible: false},
-        {content:"Hello4", visible: false},
-        {content:"Hello5", visible: false},
-        {content:"Hello6", visible: false},
-        {content:"Hello7", visible: false},
-        {content:"Hello8", visible: false},
-        {content:"Hello9", visible: false},
-        {content:"Hello10", visible: false}
+        {content:"Hello1", visible: false, id:"1"},
+        {content:"Hello2", visible: false, id:"2"},
+        {content:"Hello3", visible: false, id:"3"},
+        {content:"Hello4", visible: false, id:"4"},
+        {content:"Hello5", visible: false, id:"5"},
+        {content:"Hello6", visible: false, id:"6"},
+        {content:"Hello7", visible: false, id:"7"},
+        {content:"Hello8", visible: false, id:"8"},
+        {content:"Hello9", visible: false, id:"9"},
+        {content:"Hello10", visible: false, id:"10"}
     ]);
 
 </script>
