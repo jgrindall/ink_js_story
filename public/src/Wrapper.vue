@@ -1,7 +1,13 @@
 <template>
 
     <div ref="wrapperRef" class="wrapper">
-        <div class="container" :ref="(el:any) => setItemRef(el, i)" v-for="(item, i) in items" :key="item.id" :class="{seen: visHash[item.id]}">
+        <div class="container"
+             :ref="(el:any) => blockRefs[i] = el"
+             v-for="(item, i) in items"
+             :key="item.id"
+             :class="{seen: visHash[item.id]?.visible}"
+             :style="{'animation-delay' : visHash[item.id]?.delay + 's'}"
+        >
             <slot :item = "item"/>
         </div>
 
@@ -24,18 +30,16 @@
         items: HasId[]
     };
 
+    type VisData = {
+        visible: boolean;
+        delay: number;
+    };
+
     const props = defineProps<propTypes>();
 
-    const visHash: Ref<Record<string, boolean>> = ref({});
+    const visHash: Ref<Record<string, VisData>> = ref({});
 
     let blockRefs:any[] = [];
-
-    const setItemRef = (el:any, i:any) => {
-        console.log('el', i, el);
-        if (el) {
-            blockRefs[i] = el;
-        }
-    };
 
     const emit = defineEmits(['change']);
 
@@ -63,11 +67,19 @@
 
     const updateVis = ()=>{
        const _vis = blockRefs.map(isElemVisible);
+       let d = 0;
         props.items.forEach( (item: HasId, i:number)=>{
-            visHash.value[item.id] = visHash.value[item.id] || _vis[i];
+            const alreadyShown = visHash.value[item.id]?.visible;
+            if(!alreadyShown && _vis[i]){
+                visHash.value[item.id] = {
+                    visible: true,
+                    delay: d
+                };
+                d += 0.5;
+            }
         });
         console.log(visHash.value);
-    }
+    };
 
     let handleScroll = (e:any) => {
        updateVis();
@@ -79,6 +91,14 @@
 
 
 <style scoped lang="scss">
+    @keyframes fading {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
     .wrapper{
         background: lightpink;
         position: absolute;
@@ -88,7 +108,14 @@
         left:400px;
         overflow-y: auto;
     }
-    .seen{
-        background:green;
+    .container{
+        opacity: 0.22;
+        &.seen{
+            background: green;
+            animation: fading ease-in 1s;
+            animation-fill-mode: forwards;
+            animation-duration: 1s;
+        }
     }
 </style>
+
