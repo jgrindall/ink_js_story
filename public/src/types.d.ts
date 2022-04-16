@@ -1,14 +1,12 @@
-export interface Paragraph{
+export type Choice = {
     text: string,
-    tags: string[],
-    id:string,
-    shown:boolean,
-    delay:number
+    id:string
 }
 
-export interface Choice {
+export type Paragraph = {
+    tags: string[],
     text: string,
-    id:string,
-    shown:boolean,
-    delay:number
+    id:string
 }
+
+export type Block = Choice | Paragraph;

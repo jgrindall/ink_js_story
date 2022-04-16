@@ -1,12 +1,8 @@
 <template>
 
-    <div class="paragraph"
-         :class="{'shown': paragraph.shown}"
-         :style="{'animation-delay' : paragraph.delay + 's'}"
-    >
+    <div class="paragraph">
         <p>
             {{paragraph.text}}
-            <span>delay = {{paragraph.delay}}</span>
             <span>tags = {{paragraph.tags}}</span>
         </p>
     </div>

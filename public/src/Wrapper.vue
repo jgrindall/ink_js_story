@@ -1,15 +1,17 @@
 <template>
 
     <div ref="wrapperRef" class="wrapper">
+
         <div class="container"
-             :ref="el => addChild(el)"
+             :ref="el => addChild(item, el)"
              v-for="item in items"
              :key="item.id"
-             :class="{'seen': visHash[item.id]?.visible}"
-             :style="{'animation-delay' : visHash[item.id]?.delay + 's'}"
+             :class="{'seen': visibility[item.id]?.visible}"
+             :style="{'animation-delay' : visibility[item.id]?.delay + 's'}"
         >
             <slot :item="item as any"/>
         </div>
+
 
     </div>
 
@@ -17,36 +19,43 @@
 
 <script lang="ts" setup>
 
-    import { ref, Ref, onMounted, onUnmounted, watchEffect, defineEmits, onBeforeUnmount } from 'vue'
+    import { ref, Ref, onMounted, onUnmounted, onBeforeUnmount, watchEffect, watch } from 'vue'
     import {isContained} from "./Layout";
     import {debounce} from "underscore";
 
-    type IdType = string;
-
     interface HasId{
-        id: IdType
+        id: string
     }
-
-    type VisData = {
-        visible: boolean;
-        delay: number;
-    };
 
     const props = defineProps<{
         items: HasId[]
     }>();
 
-    const visHash: Ref<Record<IdType, VisData>> = ref({});
+    const visibility : Ref<{[key:string]: {visible: boolean, delay: number}}> = ref({});
 
-    let children:any[] = [];
+    let children: {[key: string] : HTMLElement} = {};
 
-    const addChild = (el:any) =>{
-        children.push(el)
+    const addChild = (item:HasId, el:HTMLElement) =>{
+        if(!children[item.id]){
+            children[item.id] = el;
+            updateVis();
+        }
     }
 
-    const emit = defineEmits(['change']);
-
     const wrapperRef = ref<HTMLInputElement | null>(null);
+
+    watch(() => props.items, (items: HasId[]) => {
+        visibility.value = {};
+        children = {};
+        items.forEach((item:HasId) =>{
+            visibility.value[item.id] = {
+                ...visibility.value[item.id],
+                visible: false,
+                delay:0
+            };
+        });
+        updateVis();
+    })
 
     onMounted(()=>{
         wrapperRef?.value?.addEventListener("scroll", handleScroll);
@@ -61,18 +70,20 @@
     };
 
     const updateVis = ()=>{
-        const _vis = children.map(isElemVisible);
         let d = 0;
-        props.items.forEach( (item: HasId, i:number)=>{
-            const alreadyShown = visHash.value[item.id]?.visible;
-            if(!alreadyShown && _vis[i]){
-                visHash.value[item.id] = {
+        const ids = Object.keys(visibility.value);
+        debugger;
+        ids.forEach(id => {
+            const value = visibility.value[id];
+            const alreadyShown = value.visible;
+            if(!alreadyShown && children[id] && isElemVisible(children[id])){
+                visibility.value[id] = {
                     visible: true,
                     delay: d
                 };
                 d += 0.5;
             }
-        });
+        })
     };
 
     let handleScroll = () => {

@@ -37,7 +37,6 @@ export const useStore = defineStore('Story', {
                     if(content){
                         storyManager = new StoryManager(content);
                         storyManager.on("continue", (event:any)=>{
-                            console.log(event.data);
                             this.paragraphs = [
                                 ...this.paragraphs,
                                 ...event.data.paragraphs
@@ -48,13 +47,9 @@ export const useStore = defineStore('Story', {
                     }
                 });
         },
-        show(i:number, delay:number){
-            const p = this.paragraphs[i];
-            p.shown = true;
-            p.delay = delay;
-        },
-        choose(i:number){
-            storyManager.choose(i)
+        choose(c: Choice){
+            const ids = this.choices.map(c=>c.id);
+            storyManager.choose(ids.indexOf(c.id))
         },
         increment(){
             this.counter++

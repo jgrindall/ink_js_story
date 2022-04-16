@@ -26,18 +26,14 @@ export class StoryManager extends EventEmitter{
             paragraphs.push({
                 text: text,
                 tags: this.story.currentTags || [],
-                id: "" + id,
-                shown: false,
-                delay:0
+                id: "" + id
             });
             id++;
         }
         this.story.currentChoices.forEach((choice: any) => {
             choices.push({
                 text: choice.text,
-                id: "" + id,
-                shown: false,
-                delay:0
+                id: "" + id
             });
             id++;
         });

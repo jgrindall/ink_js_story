@@ -5,8 +5,8 @@
 
    <Wrapper :items="items">
         <template #default="{ item: item }">
-            <ParagraphView v-if="(item as any).type === 'p'" :paragraph="(item as any).contents"/>
-            <ChoiceView v-else-if="(item as any).type === 'c'" :choice="(item as any).contents"/>
+            <ParagraphView v-if="(item as any).type === 'paragraph'" :paragraph="(item as any)"/>
+            <ChoiceView v-else-if="(item as any).type === 'choice'" :choice="(item as any)" @click="store2.choose((item as any))"/>
         </template>
     </Wrapper>
 
@@ -43,24 +43,21 @@
     const { paragraphs, choices } = storeToRefs(store2);
 
     const items = computed(() => {
-        console.log(paragraphs, choices);
-        const _paragraphs = paragraphs.value.map(p => {
+        const paragraphsWithType = paragraphs.value.map((p:Paragraph) => {
             return {
-                type:"p",
-                id:p.id,
-                contents: p
+                ...p,
+                type: "paragraph"
             }
-        });
-        const _choices = choices.value.map(c => {
+        })
+        const choicesWithType = choices.value.map(c => {
             return {
-                type:"c",
-                id:c.id,
-                contents: c
+                ...c,
+                type:"choice"
             }
         });
         return [
-            ... _paragraphs,
-            ... _choices
+            ... paragraphsWithType,
+            ... choicesWithType
         ];
     });
 

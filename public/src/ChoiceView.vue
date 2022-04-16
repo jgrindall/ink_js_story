@@ -1,20 +1,16 @@
 <template>
 
-   <div class="choice"
-        :class="{'shown': choice.shown}"
-        :style="{'animation-delay' : choice.delay + 's'}">
+   <div class="choice">
       <p>
          Choice: {{choice.text}}
-         <span>delay = {{choice.delay}}</span>
       </p>
-
    </div>
 
 </template>
 
 <script lang="ts" setup>
 
-    import {PropType, defineProps } from 'vue';
+    import {PropType } from 'vue';
     import {Choice} from "@/types";
 
     const props = defineProps({
