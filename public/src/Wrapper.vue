@@ -2,13 +2,13 @@
 
     <div ref="wrapperRef" class="wrapper">
         <div class="container"
-             :ref="(el:any) => blockRefs[i] = el"
-             v-for="(item, i) in items"
+             :ref="el => addChild(el)"
+             v-for="item in items"
              :key="item.id"
-             :class="{seen: visHash[item.id]?.visible}"
+             :class="{'seen': visHash[item.id]?.visible}"
              :style="{'animation-delay' : visHash[item.id]?.delay + 's'}"
         >
-            <slot :item = "item"/>
+            <slot :item="item as any"/>
         </div>
 
     </div>
@@ -17,29 +17,32 @@
 
 <script lang="ts" setup>
 
-    import { ref, onMounted, onUnmounted, watchEffect, defineEmits, onBeforeUnmount } from 'vue'
-    import type { Ref } from 'vue'
+    import { ref, Ref, onMounted, onUnmounted, watchEffect, defineEmits, onBeforeUnmount } from 'vue'
     import {isContained} from "./Layout";
     import {debounce} from "underscore";
 
-    interface HasId{
-        id: string
-    }
+    type IdType = string;
 
-    type propTypes = {
-        items: HasId[]
-    };
+    interface HasId{
+        id: IdType
+    }
 
     type VisData = {
         visible: boolean;
         delay: number;
     };
 
-    const props = defineProps<propTypes>();
+    const props = defineProps<{
+        items: HasId[]
+    }>();
 
-    const visHash: Ref<Record<string, VisData>> = ref({});
+    const visHash: Ref<Record<IdType, VisData>> = ref({});
 
-    let blockRefs:any[] = [];
+    let children:any[] = [];
+
+    const addChild = (el:any) =>{
+        children.push(el)
+    }
 
     const emit = defineEmits(['change']);
 
@@ -57,17 +60,9 @@
         return isContained(el.getBoundingClientRect(), wrapperRef?.value?.getBoundingClientRect())
     };
 
-   function handleFade(){
-        const els:HTMLElement[] = [];
-        els.forEach((el, i)=>{
-            const vis = isElemVisible(el);
-            console.log(el, vis);
-        });
-    }
-
     const updateVis = ()=>{
-       const _vis = blockRefs.map(isElemVisible);
-       let d = 0;
+        const _vis = children.map(isElemVisible);
+        let d = 0;
         props.items.forEach( (item: HasId, i:number)=>{
             const alreadyShown = visHash.value[item.id]?.visible;
             if(!alreadyShown && _vis[i]){
@@ -78,10 +73,9 @@
                 d += 0.5;
             }
         });
-        console.log(visHash.value);
     };
 
-    let handleScroll = (e:any) => {
+    let handleScroll = () => {
        updateVis();
     };
 
@@ -109,7 +103,7 @@
         overflow-y: auto;
     }
     .container{
-        opacity: 0.22;
+        opacity: 0;
         &.seen{
             background: green;
             animation: fading ease-in 1s;

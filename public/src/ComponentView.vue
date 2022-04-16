@@ -1,28 +1,14 @@
 <template>
     <div>
-        {{ msg }}
+        {{ msg }} {{ counter }} {{ store.gCount }}
     </div>
 
-    <div>
-        {{ counter }}
-    </div>
-
-    <div>
-        {{ store.gCount }}
-    </div>
-
-    <ul>
-
-        <li v-for="(paragraph, i) in paragraphs" :key="paragraph.id">
-            <ParagraphView :ref="(el:any) => paragraphRefs[i] = el.$el" class="fade-in" :paragraph="paragraph"/>
-        </li>
-    </ul>
-
-    <ul>
-        <li v-for="(choice, i) in choices" :key="choice.id" @click="store2.choose(i)">
-            <ChoiceView :ref="(el:any) => choiceRefs[i] = el.$el" class="fade-in" :choice="choice"/>
-        </li>
-    </ul>
+   <Wrapper :items="items">
+        <template #default="{ item: item }">
+            <ParagraphView v-if="(item as any).type === 'p'" :paragraph="(item as any).contents"/>
+            <ChoiceView v-else-if="(item as any).type === 'c'" :choice="(item as any).contents"/>
+        </template>
+    </Wrapper>
 
     <button @click="toggleVis">Toggle</button>
     <div v-if="visible">
@@ -32,20 +18,14 @@
 
 <script lang="ts" setup>
 
-    import {
-        ref,
-        onMounted, onUnmounted, PropType, computed, defineExpose, defineProps
-    } from "vue";
-
+    import {ref, onMounted, onUnmounted, PropType, computed} from "vue";
     import { storeToRefs } from 'pinia'
     import {useStore as useCounterStore} from './Counter';
     import {useStore as useStoryStore} from './Story';
     import ChoiceView from "./ChoiceView.vue";
     import ParagraphView from "./ParagraphView.vue";
     import {Paragraph} from "./types";
-
-    const paragraphRefs = ref<( (typeof ParagraphView) | null)[]>([]);
-    const choiceRefs = ref<( (typeof ChoiceView) | null)[]>([]);
+    import Wrapper from "./Wrapper.vue";
 
     const props = defineProps({
         msg:  {
@@ -62,24 +42,31 @@
     const { name, counter } = storeToRefs(store);
     const { paragraphs, choices } = storeToRefs(store2);
 
-    const printMsg = (msg: string) => {
-        console.log(`The message is: ${msg}`);
-    };
+    const items = computed(() => {
+        console.log(paragraphs, choices);
+        const _paragraphs = paragraphs.value.map(p => {
+            return {
+                type:"p",
+                id:p.id,
+                contents: p
+            }
+        });
+        const _choices = choices.value.map(c => {
+            return {
+                type:"c",
+                id:c.id,
+                contents: c
+            }
+        });
+        return [
+            ... _paragraphs,
+            ... _choices
+        ];
+    });
 
     const toggleVis = () => {
         visible.value = !visible.value;
-        printMsg("hello");
         store.increment();
     };
-
-    defineExpose({
-        getRects:()=>{
-            return [
-                ...Object.values(paragraphRefs?.value || []),
-                ...Object.values(choiceRefs?.value || [])
-            ]
-        }
-    });
-
 
 </script>

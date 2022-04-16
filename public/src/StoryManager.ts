@@ -35,7 +35,7 @@ export class StoryManager extends EventEmitter{
         this.story.currentChoices.forEach((choice: any) => {
             choices.push({
                 text: choice.text,
-                id: "" +id,
+                id: "" + id,
                 shown: false,
                 delay:0
             });

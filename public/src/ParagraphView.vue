@@ -28,22 +28,7 @@
 </script>
 
 <style lang="scss" scoped>
-    @keyframes fading {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
     .paragraph{
-        opacity: 0;
-        &.shown{
-            background: lightpink;
-            animation: fading ease-in 1s;
-            animation-fill-mode: forwards;
-            animation-duration: 1s;
-        }
         p{
             background: grey;
             margin:40px;

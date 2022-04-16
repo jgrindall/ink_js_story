@@ -27,22 +27,7 @@
 </script>
 
 <style lang="scss" scoped>
-   @keyframes fading {
-      from {
-         opacity: 0;
-      }
-      to {
-         opacity: 1;
-      }
-   }
    .choice{
-      opacity: 0;
-      &.shown{
-         background: lightgreen;
-         animation: fading ease-in 1s;
-         animation-fill-mode: forwards;
-         animation-duration: 1s;
-      }
       p{
          background: lightblue;
          margin:40px;
