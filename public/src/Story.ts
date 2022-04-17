@@ -51,9 +51,9 @@ export const useStore = defineStore('Story', {
         setVariable(varName:string, value: any){
             storyManager.setVariable(varName, value);
         },
-        choose(c: Choice){
-            const ids = this.choices.map(c=>c.id);
-            storyManager.choose(ids.indexOf(c.id))
+        choose(choice: Choice){
+            const ids = this.choices.map( (c: Choice) =>c.id);
+            storyManager.choose(ids.indexOf(choice.id))
         },
         increment(){
             this.counter++

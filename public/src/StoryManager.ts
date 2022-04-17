@@ -1,6 +1,6 @@
 import {Story} from "inkjs";
 import {EventEmitter} from "@billjs/event-emitter";
-import {Choice, Paragraph} from "@/types";
+import {Choice, Paragraph, Tags} from "@/types";
 
 const _s = new Story({"inkVersion":20,"root":[[["done",{"#f":5,"#n":"g-0"}],null],"done",{"#f":1}],"listDefs":{}});
 
@@ -26,9 +26,18 @@ export class StoryManager extends EventEmitter{
         const choices:Choice[] = [];
         while(this.story.canContinue) {
             const text:string = this.story.Continue() || "";
+            // merge tag objects
+            const tagsArray:Tags[] = (this.story.currentTags || []).map(s => JSON.parse(s) as Tags);
+            const tags = tagsArray.reduce((memo: Tags, current: Tags)=>{
+                return {
+                    ...current,
+                    ...memo
+                };
+            }, {} as Tags);
+
             paragraphs.push({
-                text: text,
-                tags: this.story.currentTags || [],
+                text,
+                tags,
                 id: "" + id
             });
             id++;
@@ -41,7 +50,11 @@ export class StoryManager extends EventEmitter{
             id++;
         });
         const variables = this.story.variablesState;
-        this.fire("continue", {paragraphs, choices, variables})
+        this.fire("continue", {
+            paragraphs,
+            choices,
+            variables
+        })
     }
 }
 

@@ -36,8 +36,10 @@
     let children: {[key: string] : HTMLElement} = {};
 
     const addChild = (item:HasId, el:HTMLElement) =>{
-        children[item.id] = el;
-        updateVis();
+        if(!children[item.id]){
+            children[item.id] = el;
+            updateVis();
+        }
     }
 
     const wrapperRef = ref<HTMLInputElement | null>(null);
@@ -68,6 +70,7 @@
 
     const updateVis = ()=>{
         let d = 0;
+        console.log("update", visibility.value)
         const ids = Object.keys(visibility.value);
         ids.forEach(id => {
             const value = visibility.value[id];

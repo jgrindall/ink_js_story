@@ -1,11 +1,15 @@
 <template>
 
-    <div class="paragraph">
+    <div class="paragraph" :class="additionalClasses">
         <p>
             {{paragraph.id}}
             <br/>
             {{paragraph.text}}
-            <span>tags = {{paragraph.tags}}</span>
+
+            <div v-if="paragraph.tags.images" class="images">
+                <img v-for="img in paragraph.tags.images" :src='img'/>
+            </div>
+
         </p>
     </div>
 
@@ -13,8 +17,8 @@
 
 <script lang="ts" setup>
 
-    import { PropType } from 'vue';
-    import {Paragraph} from "@/types";
+    import { PropType, computed } from 'vue';
+    import {Paragraph, Tags} from "@/types";
 
     const props = defineProps({
         paragraph:  {
@@ -22,6 +26,10 @@
             required: true
         }
     })
+
+    const additionalClasses = computed((): string[]=>{
+        return (props.paragraph.tags.classNames || [])
+    });
 
 </script>
 
@@ -31,6 +39,17 @@
             background: grey;
             margin:40px;
             padding:40px;
+        }
+        .images{
+            img{
+                width: 100px;
+                height: 100px;
+                background: gold;
+                margin:8px;
+            }
+        }
+        &.red{
+            color: red;
         }
     }
 </style>

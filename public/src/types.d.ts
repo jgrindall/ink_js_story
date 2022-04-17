@@ -4,7 +4,7 @@ export type Choice = {
 }
 
 export type Paragraph = {
-    tags: string[],
+    tags: Tags,
     text: string,
     id:string
 }
@@ -18,3 +18,11 @@ export type StoryContinueEvent = {
         choices:Choice[]
     }
 };
+
+export type Tags = Partial<{
+    classNames: string[],
+    effects: string[],
+    images: string[],
+    a: number
+}>;
+

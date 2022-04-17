@@ -1,15 +1,16 @@
 VAR name = "John"
 
 Once upon a time6...
-#comment3
+#{"effects": ["left"], "classNames": ["red"], "images": ["1.png", "2.png"]}
+#{"a": 1}
 
 Once upon a time6...
-#comment3
+#{"comment": "comment3"}
 
 He turned to me. "What should we eat, {name}?"
 
 Once upon a time6...
-#comment3
+#{"comment": "comment3"}
 
 
  * [Choice a] -> a
@@ -18,7 +19,10 @@ Once upon a time6...
 
 
 == a ==
+
 This is a
+#{"comment": "comment3"}
+
 This is also a
 
  * [This goes to b] -> b
