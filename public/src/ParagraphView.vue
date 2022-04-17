@@ -2,6 +2,8 @@
 
     <div class="paragraph">
         <p>
+            {{paragraph.id}}
+            <br/>
             {{paragraph.text}}
             <span>tags = {{paragraph.tags}}</span>
         </p>

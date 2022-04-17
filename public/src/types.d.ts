@@ -10,3 +10,11 @@ export type Paragraph = {
 }
 
 export type Block = Choice | Paragraph;
+
+export type StoryContinueEvent = {
+    data:{
+        variables: any;
+        paragraphs: Paragraph[],
+        choices:Choice[]
+    }
+};

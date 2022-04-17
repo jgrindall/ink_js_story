@@ -3,7 +3,7 @@
     <div ref="wrapperRef" class="wrapper">
 
         <div class="container"
-             :ref="el => addChild(item, el)"
+             :ref="el => addChild(item, el as HTMLElement)"
              v-for="item in items"
              :key="item.id"
              :class="{'seen': visibility[item.id]?.visible}"
@@ -36,23 +36,20 @@
     let children: {[key: string] : HTMLElement} = {};
 
     const addChild = (item:HasId, el:HTMLElement) =>{
-        if(!children[item.id]){
-            children[item.id] = el;
-            updateVis();
-        }
+        children[item.id] = el;
+        updateVis();
     }
 
     const wrapperRef = ref<HTMLInputElement | null>(null);
 
     watch(() => props.items, (items: HasId[]) => {
-        visibility.value = {};
-        children = {};
         items.forEach((item:HasId) =>{
-            visibility.value[item.id] = {
-                ...visibility.value[item.id],
-                visible: false,
-                delay:0
-            };
+            if(!visibility.value[item.id]){
+                visibility.value[item.id] = {
+                    visible: false,
+                    delay:0
+                };
+            }
         });
         updateVis();
     })
@@ -72,7 +69,6 @@
     const updateVis = ()=>{
         let d = 0;
         const ids = Object.keys(visibility.value);
-        debugger;
         ids.forEach(id => {
             const value = visibility.value[id];
             const alreadyShown = value.visible;

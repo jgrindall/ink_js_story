@@ -1,9 +1,12 @@
-Once upon a time6...
-#comment3
+VAR name = "John"
 
 Once upon a time6...
 #comment3
 
+Once upon a time6...
+#comment3
+
+He turned to me. "What should we eat, {name}?"
 
 Once upon a time6...
 #comment3
@@ -17,8 +20,9 @@ Once upon a time6...
 == a ==
 This is a
 This is also a
--> end
 
+ * [This goes to b] -> b
+ * [To c] And another -> c
 
 
 == b ==
@@ -38,3 +42,12 @@ This is also c
 
 - They lived happily ever after.
     -> END
+
+
+=== function changeName(newName) ===
+ ~ name = newName
+ 
+ 
+
+
+
