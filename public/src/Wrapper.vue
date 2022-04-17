@@ -45,15 +45,19 @@
     const wrapperRef = ref<HTMLInputElement | null>(null);
 
     watch(() => props.items, (items: HasId[]) => {
+        let added = false;
         items.forEach((item:HasId) =>{
             if(!visibility.value[item.id]){
                 visibility.value[item.id] = {
                     visible: false,
                     delay:0
                 };
+                added = true
             }
         });
-        updateVis();
+        if(added){
+            updateVis();
+        }
     })
 
     onMounted(()=>{
