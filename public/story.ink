@@ -1,15 +1,26 @@
 VAR name = "John"
 
-Once upon a time6...
 #{"effects": ["left"], "classNames": ["red"], "images": ["1.png", "2.png"]}
+
 #{"a": 1}
 
-Once upon a time6...
+aaaaaaaaaaaaa
+
+#{"link": "b"}
+
+bbbbbbbbbbb
+
+cccccccccc
+
+dddddddddddddddddd
+
+
 #{"comment": "comment3"}
 
-He turned to me. "What should we eat, {name}?"
+eeeeeeeeeeeee
 
-Once upon a time6...
+ffffffffffffff
+
 #{"comment": "comment3"}
 
 

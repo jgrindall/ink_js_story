@@ -2,6 +2,10 @@
 
     <div ref="wrapperRef" class="wrapper">
 
+        <textarea style="height: 500px; width:600px; position: fixed; top:200px;left:0;">{{children}}</textarea>
+        <textarea style="height: 500px; width:600px; position: fixed; top:200px;right:0;">{{visibility}}</textarea>
+
+
         <div class="container"
              :ref="el => addChild(item, el as HTMLElement)"
              v-for="item in items"
@@ -9,7 +13,7 @@
              :class="{'seen': visibility[item.id]?.visible}"
              :style="{'animation-delay' : visibility[item.id]?.delay + 's'}"
         >
-            <slot :item="item as any"/>
+            <slot :item="item as any" :elapsedTime="visibility[item.id]?.elapsedTime"/>
         </div>
 
 
@@ -31,7 +35,7 @@
         items: HasId[]
     }>();
 
-    const visibility : Ref<{[key:string]: {visible: boolean, delay: number}}> = ref({});
+    const visibility : Ref<{[key:string]: {visible: boolean, delay: number, elapsedTime: number, start:number}}> = ref({});
 
     let children: {[key: string] : HTMLElement} = {};
 
@@ -42,7 +46,7 @@
         }
     }
 
-    const wrapperRef = ref<HTMLInputElement | null>(null);
+    const wrapperRef = ref<HTMLElement | null>(null);
 
     watch(() => props.items, (items: HasId[]) => {
         let added = false;
@@ -50,7 +54,9 @@
             if(!visibility.value[item.id]){
                 visibility.value[item.id] = {
                     visible: false,
-                    delay:0
+                    delay:0,
+                    elapsedTime:0,
+                    start:0
                 };
                 added = true
             }
@@ -60,21 +66,43 @@
         }
     })
 
+    let interval: number = 0;
+
+    const step = () => {
+        const ids = Object.keys(visibility.value);
+        ids.forEach(id => {
+            const value = visibility.value[id];
+            if(value.visible){
+                value.elapsedTime = Date.now() - value.start;
+            }
+        });
+    };
+
+    const startCounting = ()=>{
+        interval = setInterval(step, 1000);
+    };
+
+    const stopCounting = ()=>{
+        clearInterval(interval);
+    };
+
     onMounted(()=>{
         wrapperRef?.value?.addEventListener("scroll", handleScroll);
+        startCounting();
     });
 
     onBeforeUnmount(() => {
         wrapperRef?.value?.removeEventListener("scroll", handleScroll);
+        stopCounting();
     });
 
     const isElemVisible = (el: HTMLElement): boolean => {
         return isContained(el.getBoundingClientRect(), wrapperRef?.value?.getBoundingClientRect())
     };
 
-    const updateVis = ()=>{
+    let updateVis = ()=>{
         let d = 0;
-        console.log("update", visibility.value)
+        const delay = 500; // ms
         const ids = Object.keys(visibility.value);
         ids.forEach(id => {
             const value = visibility.value[id];
@@ -82,18 +110,22 @@
             if(!alreadyShown && children[id] && isElemVisible(children[id])){
                 visibility.value[id] = {
                     visible: true,
-                    delay: d
+                    delay: d,
+                    elapsedTime: 0,
+                    start:Date.now()
                 };
-                d += 0.5;
+                d += delay/1000;
             }
         })
     };
+
+    updateVis = debounce(updateVis, 50);
 
     let handleScroll = () => {
        updateVis();
     };
 
-    handleScroll = debounce(handleScroll, 200);
+    handleScroll = debounce(handleScroll, 50);
 
 </script>
 

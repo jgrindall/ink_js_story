@@ -5,7 +5,7 @@
     </div>
 
     <div id="wrapper">
-        <ComponentView :msg="name" ref="componentRef"/>
+        <ComponentView :msg="name" @continue="onContinue"/>
     </div>
 
     <p style="position: fixed;z-index:3; top:10px; left:10px;">#{{paragraphs.length}}</p>
@@ -28,6 +28,10 @@
     onMounted(()=>{
         store.load();
     });
+
+    const onContinue = ()=>{
+        store.continue();
+    };
 
 </script>
 
@@ -53,11 +57,5 @@
     }
     #wrapper{
         z-index: 1;
-        overflow-y: auto;
-    }
-    #container{
-        width:768px;
-        margin:auto;
-        display: block;
     }
 </style>

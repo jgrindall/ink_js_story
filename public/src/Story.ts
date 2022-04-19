@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import {StoryManager} from "./StoryManager";
-import {Choice, Paragraph, StoryContinueEvent} from "@/types";
+import {Choice, Paragraph, StoryContinueEvent} from "./types";
+import {last} from "underscore";
 
 let storyManager: StoryManager;
 
@@ -33,13 +34,14 @@ export const useStore = defineStore('Story', {
                 .then((response) => {
                     return response.text();
                 })
-                .then((content: any) => {
+                .then((content: Object) => {
                     if(content){
                         storyManager = new StoryManager(content);
-                        storyManager.on("continue", (event:StoryContinueEvent)=>{
+                        storyManager.on("data", (event:StoryContinueEvent)=>{
+                            const paragraph = event.data.paragraph
                             this.paragraphs = [
                                 ...this.paragraphs,
-                                ...event.data.paragraphs
+                                paragraph
                             ];
                             this.choices = event.data.choices;
                             console.log(event.data.variables["name"]);
@@ -47,6 +49,9 @@ export const useStore = defineStore('Story', {
                         storyManager.continue();
                     }
                 });
+        },
+        continue(){
+            storyManager.continue();
         },
         setVariable(varName:string, value: any){
             storyManager.setVariable(varName, value);

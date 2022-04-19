@@ -1,8 +1,9 @@
 <template>
 
-   <div class="choice">
+   <div class="choice" ref="element">
       <p>
-         Choice: {{choice.text}}
+         {{choice.id}}
+         Choice: {{choice.text}} {{visible}}
       </p>
    </div>
 
@@ -10,15 +11,21 @@
 
 <script lang="ts" setup>
 
-    import {PropType } from 'vue';
-    import {Choice} from "@/types";
+    import {PropType, ref } from 'vue';
+    import {Choice} from "./types";
 
     const props = defineProps({
        choice:  {
           type: Object as PropType<Choice>,
           required: true
+       },
+       visible:{
+          type: Boolean,
+          required: true
        }
     })
+    const element = ref<HTMLElement | null>(null);
+    defineExpose({ element })
 
 </script>
 

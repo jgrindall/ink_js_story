@@ -1,62 +1,97 @@
 import {Story} from "inkjs";
 import {EventEmitter} from "@billjs/event-emitter";
-import {Choice, Paragraph, Tags} from "@/types";
+import {Choice, Paragraph, ParagraphContent, Tags} from "@/types";
 
 const _s = new Story({"inkVersion":20,"root":[[["done",{"#f":5,"#n":"g-0"}],null],"done",{"#f":1}],"listDefs":{}});
 
+const merge = <T>(arr:T[]) : T => {
+    return arr.reduce((memo: T, current: T)=>{
+        return {
+            ...current,
+            ...memo
+        };
+    }, {} as T)
+};
+
 let id = 0;
 
-export class StoryManager extends EventEmitter{
+//BindExternalFunctin
+//ObserveVariable
+//https://klaudiabronowicka.com/blog/2020-12-15-making-a-visual-novel-with-unity-4-5-variables-and-state-management/
+
+export class StoryManager extends EventEmitter {
 
     private story: typeof _s;
     
-    constructor(content: any){
+    constructor(content: Object){
         super();
         this.story = new Story(content);
     }
     public choose(index:number){
         this.story.ChooseChoiceIndex(index);
-        this.continue();
+        //this.continue();
     }
-    public setVariable(varName:string, value: any){
-        this.story.EvaluateFunction("changeName", [value]);
+    public divert(knotName: string){
+        //this.story.
     }
-    public continue() {
-        const paragraphs:Paragraph[] = [];
-        const choices:Choice[] = [];
-        while(this.story.canContinue) {
-            const text:string = this.story.Continue() || "";
-            // merge tag objects
-            const tagsArray:Tags[] = (this.story.currentTags || []).map(s => JSON.parse(s) as Tags);
-            const tags = tagsArray.reduce((memo: Tags, current: Tags)=>{
-                return {
-                    ...current,
-                    ...memo
-                };
-            }, {} as Tags);
-
-            paragraphs.push({
-                text,
-                tags,
-                id: "" + id
-            });
-            id++;
+    private getData(){
+        const text:string = this.story.Continue() || "";
+        let contents:ParagraphContent[] = [
+            {
+                type: "text",
+                text: text
+            }
+        ];
+        // merge tag objects into one JSON object
+        const tagsArray:Tags[] = (this.story.currentTags || []).map(s => JSON.parse(s) as Tags);
+        const tags = merge(tagsArray);
+        if(tags.link) {
+            //also load the next one
+            contents = [
+                ...contents,
+                {
+                    type: "link",
+                    text: tags.link
+                },
+                {
+                    type: "text",
+                    text: this.story.Continue() || ""
+                }
+            ]
         }
+        const paragraph: Paragraph = {
+            contents: contents,
+            tags,
+            id: "" + id
+        };
+        id++;
+        const choices: Choice[] = [];
         this.story.currentChoices.forEach((choice: any) => {
             choices.push({
                 text: choice.text,
+                type: "choice",
                 id: "" + id
             });
             id++;
         });
         const variables = this.story.variablesState;
-        this.fire("continue", {
-            paragraphs,
+        return {
+            paragraph,
             choices,
             variables
-        })
+        };
+    }
+    public continue(){
+        if(this.story.canContinue){
+            const data = this.getData();
+            this.fire("data", data);
+        }
+    }
+    public setVariable(varName:string, value: any){
+        this.story.EvaluateFunction("changeName", [value]);
     }
 }
+
 
 
 
