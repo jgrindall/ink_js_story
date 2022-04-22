@@ -25,8 +25,8 @@
         height:100%;
     }
     canvas{
-        background: red;
-        background-image: url("./bg.jpg");
+        background: #333;
+        background-image: url("../images/bg.png");
         background-repeat: no-repeat;
         background-size: cover;
     }

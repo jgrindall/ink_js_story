@@ -29,7 +29,7 @@ export const useStore = defineStore('Story', {
         }
     },
     actions:{
-        async load(filename:string = "story.ink.json"){
+        async load(filename:string = "story/story.ink.json"){
             fetch(filename)
                 .then((response) => {
                     return response.text();

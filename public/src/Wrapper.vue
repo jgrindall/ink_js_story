@@ -142,10 +142,10 @@
     .wrapper{
         background: lightpink;
         position: absolute;
-        top:100px;
-        width:500px;
-        height:700px;
-        left:400px;
+        top:0px;
+        width:100%;
+        height:100%;
+        left:0px;
         overflow-y: auto;
     }
     .container{
